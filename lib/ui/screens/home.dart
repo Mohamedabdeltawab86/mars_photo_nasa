@@ -84,7 +84,13 @@ class _HomeState extends State<Home> {
               final photo = photos[index];
               return ListTile(
                 title: Text('Photo ID: ${photo.id}'),
-                subtitle: Text('photo Date ${photo.earthDate}'),
+                subtitle: Row(
+                  children: [
+                    Text('photo Date ${photo.earthDate}'),
+                    Text('Camera Name ${photo.camera}'),
+                    Text('Sol "Martian Day ${photo.sol}'),
+                  ],
+                ),
                 leading: Image.network(photo.imgSrc),
               );
             }),
