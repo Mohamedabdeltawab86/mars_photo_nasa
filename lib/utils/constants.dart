@@ -1,0 +1,1 @@
+const String settingsPath = '/settings';
