@@ -53,7 +53,7 @@ class Api {
     }
   }
 
-  Future<List<dynamic>> fetchDatePhotos(String earthDate) async {
+  Future<List<dynamic>> fetchDatePhotos(String earthDate, {int page = 1, int pageSize = 20}) async {
     try {
       final Response response = await _dio.request(
         "/photos",

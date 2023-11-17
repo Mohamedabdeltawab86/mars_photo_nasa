@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
     Repo().fetchCuriosityData().then((bool value) {
       dataReady = value;
       if (dataReady) {
-        _fetchNextPageOfPhotos();
+        _fetchNextPageOfPhotos(DateTime.now());
       }
       setState(() {});
     });
@@ -47,12 +47,12 @@ class _HomeState extends State<Home> {
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       // User has reached the end of the list, fetch the next page of photos
-      _fetchNextPageOfPhotos();
+      _fetchNextPageOfPhotos(marsPhotos.last.earthDate);
     }
   }
 
-  Future<void> _fetchNextPageOfPhotos() async {
-    final nextPagePhotos = await Repo().fetchNextPageOfPhotos();
+  Future<void> _fetchNextPageOfPhotos(DateTime earthDate) async {
+    final nextPagePhotos = await Repo().fetchNextPageOfPhotos(earthDate);
     if (nextPagePhotos.isNotEmpty) {
       marsPhotos.addAll(nextPagePhotos);
       setState(() {});
