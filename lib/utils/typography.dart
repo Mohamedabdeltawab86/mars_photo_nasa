@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final textTheme = TextTheme(
+final TextTheme textTheme = TextTheme(
   displayLarge: GoogleFonts.tajawal(
     fontWeight: FontWeight.w400,
     fontSize: 57,

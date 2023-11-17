@@ -1,7 +1,8 @@
 {
-    "appTitle": "Flutter Localization",
+    "appTitle": "Mars Photo Localization",
     "theme": "App Theme",
     "language": "English",
     "settings": "Settings",
-    "myName": "Mohamed"
+    "myName": "Mohamed",
+    "date": "Date"
 }

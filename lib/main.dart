@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mars_photo_nasa/data/db/init_db.dart';
+// import 'package:mars_photo_nasa/l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:mars_photo_nasa/utils/app_router.dart';
 import 'package:mars_photo_nasa/utils/color_scheme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mars_photo_nasa/utils/constants.dart';
 import 'package:mars_photo_nasa/utils/typography.dart';
+import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Hive.openBox("settings");
+  await initDB();
   runApp(const MyApp());
 }
 
@@ -17,35 +21,39 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final strings = AppLocalizations.of(context)!;
     return ValueListenableBuilder(
-        valueListenable: Hive.box('settings').listenable(),
-        builder: (_, value, __) {
-          // final strings = AppLocalizations.of(context);
+        valueListenable: Hive.box(settingsKey).listenable(),
+        builder: (_, box, __) {
           final bool isDark =
-              Hive.box('settings').get('isDark', defaultValue: false);
+              Hive.box(settingsKey).get(isDarkKey, defaultValue: false);
           final String lang =
-              Hive.box('settings').get('lang', defaultValue: 'en');
-          return MaterialApp.router(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: Locale(lang),
-
-            // title: strings.appTitle,
-            theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: lightColorScheme,
-              textTheme: textTheme,
-            ),
-            darkTheme: ThemeData(
-              useMaterial3: true,
-              colorScheme: darkColorScheme,
-              textTheme: textTheme,
-            ),
-            themeMode:
-                isDark ? ThemeMode.dark : ThemeMode.light, // Default is system
-            debugShowCheckedModeBanner: false,
-            routerConfig: router(),
-          );
+              Hive.box(settingsKey).get(langkey, defaultValue: defaultLang);
+          return Sizer(builder: (context, orientation, deviceType) {
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              // title: "strings.appTitle",
+              // 3 locals: l.Delegates, supportedLocales, locale
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: Locale(lang),
+              // theme, darkTheme, themeMode
+              // theme : light = default, darkTheme = dart
+              // colorScheme, materials3, textTheme
+              theme: ThemeData(
+                colorScheme: lightColorScheme,
+                useMaterial3: true,
+                textTheme: textTheme,
+              ),
+              darkTheme: ThemeData(
+                colorScheme: darkColorScheme,
+                useMaterial3: true,
+                textTheme: textTheme,
+              ),
+              themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+              routerConfig: router(),
+            );
+          });
         });
   }
 }
