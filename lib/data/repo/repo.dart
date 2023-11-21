@@ -23,27 +23,13 @@ class Repo {
     return photos;
   }
 
-  Future<List<MarsPhoto>> fetchNextPageOfPhotos(DateTime earthDate) async {
-    bool online = await InternetConnectionChecker().hasConnection;
-    if (online == true) {
-      final formattedDate = DateFormat('yyyy-MM-DD').format(earthDate);
-      final data = await _api.fetchDatePhotos(formattedDate,
-          page: _currentPage, pageSize: _pageSize);
-      final photos =
-          data.map((marsPhoto) => MarsPhoto.fromJson(marsPhoto)).toList();
-      savePhotosList(photos);
-      _currentPage++;
-      return photos;
-    } else {
-      return fetchDatePhotosFromDB(earthDate);
-    }
-  }
 
-  Future<List<MarsPhoto>> fetchDatePhotos(DateTime earthDate) async {
+
+  Future<List<MarsPhoto>> fetchDatePhotos(DateTime earthDate, {int? page}) async {
     bool online = await InternetConnectionChecker().hasConnection;
     if (online == true) {
       final formattedDate = DateFormat('yyyy-MM-dd').format(earthDate);
-      final data = await _api.fetchDatePhotos(formattedDate);
+      final data = await _api.fetchDatePhotos(formattedDate, page:page);
       final photos =
           data.map((photoMap) => MarsPhoto.fromJson(photoMap)).toList();
       savePhotosList(photos);

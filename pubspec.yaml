@@ -31,6 +31,7 @@ dependencies:
   bloc: ^8.1.2
   build_runner: ^2.4.6
   cached_network_image: ^3.3.0
+  conditional_builder_null_safety: ^0.0.6
   cupertino_icons: ^1.0.2
   dio: ^5.3.3
   dio_smart_retry: ^6.0.0
@@ -52,12 +53,6 @@ dependencies:
   sizer: ^2.0.15
 
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^3.0.0
   flutter_test:
     sdk: flutter

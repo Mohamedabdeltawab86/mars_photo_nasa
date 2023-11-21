@@ -1,105 +1,48 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mars_photo_nasa/data/model/mars_photo.dart';
-import 'package:mars_photo_nasa/data/repo/repo.dart';
-// import 'package:mars_photo_nasa/l10n/app_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:mars_photo_nasa/ui/widgets/home_drawer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:mars_photo_nasa/ui/widgets/mars_photo_card.dart';
-import 'package:mars_photo_nasa/utils/constants.dart';
+import '../../logic/cubit/mars_cubit.dart';
 
-import '../../data/model/rover.dart';
+class Home extends StatelessWidget {
+  final DateTime? earthDate;
 
-class Home extends StatefulWidget {
-  const Home({super.key});
-
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  bool dataReady = false;
-  List<MarsPhoto> marsPhotos = [];
-  ScrollController _scrollController = ScrollController();
+  const Home({super.key, required this.earthDate});
 
   @override
-  void initState() {
-    _scrollController.addListener(_scrollListener);
-    Repo().fetchCuriosityData().then((bool value) {
-      dataReady = value;
-      if (dataReady) {
-        _fetchNextPageOfPhotos(DateTime.now());
-      }
-      setState(() {});
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _scrollListener() {
-    if (_scrollController.offset >=
-            _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
-      // User has reached the end of the list, fetch the next page of photos
-      _fetchNextPageOfPhotos(marsPhotos.last.earthDate);
-    }
-  }
-
-  Future<void> _fetchNextPageOfPhotos(DateTime earthDate) async {
-    final nextPagePhotos = await Repo().fetchNextPageOfPhotos(earthDate);
-    if (nextPagePhotos.isNotEmpty) {
-      marsPhotos.addAll(nextPagePhotos);
-      setState(() {});
-    }
-  }
-
-    @override
-    Widget build(BuildContext context) {
-      final strings = AppLocalizations.of(context)!;
-      final Rover rover = Hive.box<Rover>(roverDetailsKey).get(roverDetails)!;
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            strings.appTitle,
-            style: Theme.of(context).textTheme.displayLarge,
-          ),
+  Widget build(BuildContext context) {
+    final MarsCubit cubit = context.read<MarsCubit>();
+    cubit.resetHomePage();
+    cubit.fetchMarsPhotos(earthDate);
+    cubit.scrollController.addListener(
+      () => cubit.checkScrollPosition(earthDate!),
+    );
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          earthDate == null
+              ? "Latest Photos"
+              : DateFormat.yMMMd().format(earthDate!),
+          style: Theme.of(context).textTheme.titleSmall,
         ),
-        drawer: const HomeDrawer(),
-        body: !dataReady
-            ? const Text("Loading")
-            : Column(children: [
-                ListTile(
-                  title: Text(strings.date),
-                  trailing: const Icon(Icons.calendar_month),
-                  onTap: () async {
-                    DateTime? date = await showDatePicker(
-                      context: context,
-                      initialDate: rover.maxDate,
-                      firstDate: rover.landingDate,
-                      lastDate: rover.maxDate,
-                    );
-                    marsPhotos =
-                        await Repo().fetchDatePhotos(date ?? rover.maxDate);
-                    setState(() {});
-                  },
-                ),
-                Expanded(
-                    child: ListView.builder(
-                        itemCount: marsPhotos.length,
-                        itemBuilder: (_, index) =>
-                            MarsPhotoCard(marsPhoto: marsPhotos[index])))
-              ]),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.webhook),
-            onPressed: () {
-              Repo().fetchCuriosityData();
-            }),
-      );
-    }
+      ),
+      body: BlocBuilder<MarsCubit, MarsState>(
+        builder: (context, state) {
+          return ConditionalBuilder(
+            condition: cubit.isPhotosLoaded,
+            builder: (context) => ListView.builder(
+              controller: cubit.scrollController,
+              itemCount: cubit.photosList.length,
+              itemBuilder: (_, i) => MarsPhotoCard(
+                marsPhoto: cubit.photosList[i],
+              ),
+            ),
+            fallback: (_) => const Center(child: CircularProgressIndicator()),
+          );
+        },
+      ),
+    );
   }
+}

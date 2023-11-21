@@ -6,6 +6,31 @@ import 'package:flutter/foundation.dart';
 
 late Dio _dio;
 
+class Ap {
+  Ap() {
+    _dio = Dio(BaseOptions(
+        baseUrl: "",
+        method: "GET",
+        queryParameters: {},
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        receiveDataWhenStatusError: true));
+    _dio.interceptors.add(RetryInterceptor(
+      dio: _dio,
+      logPrint: log,
+      retries: 5,
+      retryDelays: [
+        const Duration(seconds: 1),
+        const Duration(seconds: 2),
+        const Duration(seconds: 3),
+        const Duration(seconds: 4),
+        const Duration(seconds: 5),
+      ],
+      retryableExtraStatuses: {status403Forbidden},
+    ));
+  }
+}
+
 class Api {
   Api() {
     _dio = Dio(
@@ -53,11 +78,14 @@ class Api {
     }
   }
 
-  Future<List<dynamic>> fetchDatePhotos(String earthDate, {int page = 1, int pageSize = 20}) async {
+  Future<List<dynamic>> fetchDatePhotos(String earthDate, {int? page}) async {
     try {
       final Response response = await _dio.request(
         "/photos",
-        queryParameters: {'earth_date': earthDate},
+        queryParameters: {
+          'earth_date': earthDate,
+          'page': page,
+        },
       );
       return response.data['photos'];
     } catch (e) {

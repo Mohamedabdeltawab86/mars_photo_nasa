@@ -1,3 +1,5 @@
+import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mars_photo_nasa/data/db/init_db.dart';
@@ -5,6 +7,7 @@ import 'package:mars_photo_nasa/data/db/init_db.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:mars_photo_nasa/utils/app_router.dart';
+import 'package:mars_photo_nasa/utils/bloc_observer.dart';
 import 'package:mars_photo_nasa/utils/color_scheme.dart';
 import 'package:mars_photo_nasa/utils/constants.dart';
 import 'package:mars_photo_nasa/utils/typography.dart';
@@ -12,6 +15,7 @@ import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer =  MyBlocObserver();
   await initDB();
   runApp(const MyApp());
 }

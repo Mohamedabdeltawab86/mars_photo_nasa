@@ -1,5 +1,4 @@
 // setting path, setting key as Hive Box
-const String settingsPath = '/settings';
 const String settingsKey = 'settings';
 
 // api data
