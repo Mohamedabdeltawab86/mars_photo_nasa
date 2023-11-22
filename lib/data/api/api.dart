@@ -6,30 +6,6 @@ import 'package:flutter/foundation.dart';
 
 late Dio _dio;
 
-class Ap {
-  Ap() {
-    _dio = Dio(BaseOptions(
-        baseUrl: "",
-        method: "GET",
-        queryParameters: {},
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        receiveDataWhenStatusError: true));
-    _dio.interceptors.add(RetryInterceptor(
-      dio: _dio,
-      logPrint: log,
-      retries: 5,
-      retryDelays: [
-        const Duration(seconds: 1),
-        const Duration(seconds: 2),
-        const Duration(seconds: 3),
-        const Duration(seconds: 4),
-        const Duration(seconds: 5),
-      ],
-      retryableExtraStatuses: {status403Forbidden},
-    ));
-  }
-}
 
 class Api {
   Api() {
