@@ -1,7 +1,7 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mars_photo_nasa/data/model/mars_photo.dart';
-
+import '../../data/model/mars_photo.dart';
 import '../../data/repo/repo.dart';
 
 part 'mars_state.dart';

@@ -29,9 +29,11 @@ GoRouter router() {
         ),
       ),
       GoRoute(
+
         path: settingsPath,
         builder: (context, state) => BlocProvider<MarsCubit>.value(
           value: marsCubit,
+          
           child: const Settings(),
         ),
       ),

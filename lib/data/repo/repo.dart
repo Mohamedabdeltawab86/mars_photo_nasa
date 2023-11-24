@@ -9,8 +9,7 @@ import 'package:mars_photo_nasa/utils/constants.dart';
 
 class Repo {
   late Api _api;
-  int _currentPage = 1;
-  static const int _pageSize = 20;
+
 
   Repo() {
     _api = Api();

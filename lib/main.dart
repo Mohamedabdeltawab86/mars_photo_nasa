@@ -5,7 +5,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mars_photo_nasa/data/db/init_db.dart';
 // import 'package:mars_photo_nasa/l10n/app_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:mars_photo_nasa/utils/app_router.dart';
 import 'package:mars_photo_nasa/utils/bloc_observer.dart';
 import 'package:mars_photo_nasa/utils/color_scheme.dart';
